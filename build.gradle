@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.amazonaws:amazon-kinesis-producer:0.10.0'
+}
+
+task copyLibs(type: Copy) {
+    from configurations.compile
+    into 'vendor/jar-dependencies/runtime-jars'
+}
