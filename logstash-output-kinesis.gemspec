@@ -1,3 +1,7 @@
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "logstash-output-kinesis/version"
+
 Gem::Specification.new do |s|
   s.name = "logstash-output-kinesis"
   s.version = LogstashOutputKinesis::VERSION
