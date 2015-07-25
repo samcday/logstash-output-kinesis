@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # Files
-  s.files = `git ls-files`.split($\)
+  s.files = `git ls-files`.split($\).concat(Dir.glob("lib/**/*.jar")).concat(Dir.glob("lib/*_jars.rb"))
    # Tests
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
