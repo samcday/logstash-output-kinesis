@@ -10,7 +10,6 @@ require "logstash-output-kinesis_jars"
 # link:https://github.com/awslabs/amazon-kinesis-producer/blob/v0.10.0/java/amazon-kinesis-producer/src/main/java/com/amazonaws/services/kinesis/producer/KinesisProducerConfiguration.java#L38[KinesisProducerConfiguration]
 class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config_name "kinesis"
-  milestone 1
 
   default :codec, 'json'
 
