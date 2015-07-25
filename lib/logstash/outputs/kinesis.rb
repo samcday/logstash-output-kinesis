@@ -101,7 +101,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       end
     end
 
-    event["[@metadata][partition_key]"] = partition_key_parts * "-"
+    event["[@metadata][partition_key]"] = (partition_key_parts * "-").to_s[/.+/m] || "-"
 
     begin
       @codec.encode(event)
