@@ -1,9 +1,7 @@
-/lib/**/*.jar
-/lib/*_jars.rb
+/.gradle/
 /*.gem
 .Gemfile.lock
 .Gemfile.bak
 /.bundle
-/vendor
 .DS_Store
 /Gemfile.lock

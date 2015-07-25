@@ -78,6 +78,10 @@ bundle install
 bundle exec rake
 ```
 
+### Updating KPL
+
+Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs! Yes, we put them in the repo :(
+
 
 ## Contributions
 
