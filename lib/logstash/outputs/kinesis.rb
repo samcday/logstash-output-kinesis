@@ -120,6 +120,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     if !@custom_endpoint.nil?
       config.setCustomEndpoint(@custom_endpoint)
     end
+
+    config
   end
 
   def send_record(event, payload)
