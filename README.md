@@ -10,7 +10,7 @@ It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/),
 
 ## Configuration
 
-Minimum required configuration to get this plugin chugging:
+Minimum required configuration to get this plugin chugging along:
 
 ```
 output {
@@ -21,28 +21,23 @@ output {
 }
 ```
 
-This plugin accepts a wide range of configuration options, most of which come from the underlying KPL library itself.
-
-[View the full list of KPL configuration options here.][kpldoc]
+This plugin accepts a wide range of configuration options, most of which come from the underlying KPL library itself. [View the full list of KPL configuration options here.][kpldoc]
 
 Please note that configuration options are snake_cased instead of camelCased. So, where [KinesisProducerConfiguration][kpldoc] offers a `setMetricsLevel` option,this plugin accepts a `metrics_level` option.
 
 ### AWS Credentials
 
-Of course, there aren't terribly many Kinesis streams out there that allow you to write to them without some AWS credentials.
+There aren't many Kinesis streams out there that allow you to write to them without some AWS credentials.
 
-This plugin does not allow you to specify credentials directly. The AWS SDK [DefaultAWSCredentialsProviderChain](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) is used, which is quite flexible. You can provide your credentials via any of the following mechanisms:
+This plugin does not allow you to specify credentials directly. Instead, the AWS SDK [DefaultAWSCredentialsProviderChain](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) is used. It's quite flexible,you can provide your credentials via any of the following mechanisms:
 
  * `AWS_ACCESS_KEY_ID` / `AWS_SECRET_KEY` environment variables
  * `~/.aws/credentials` credentials file
  * Instance profile for your running EC2 instance
 
-
 ### Building a partition key
 
-Kinesis demands a [partition key](https://docs.aws.amazon.com/kinesis/latest/dev/key-concepts.html#partition-key) be provided for each record.
-
-By default, this plugin will provide a very boring partition key of `-`. But, you can configure it to compute a partition key from fields in your log events.
+Kinesis demands a [partition key](https://docs.aws.amazon.com/kinesis/latest/dev/key-concepts.html#partition-key) be provided for each record. By default, this plugin will provide a very boring partition key of `-`. However, you can configure it to compute a partition key from fields in your log events.
 
 ```
 output {
@@ -52,8 +47,6 @@ output {
   }
 }
 ```
-
-This allows you to be flexible in how you partition your log data.
 
 
 ## Known Issues
@@ -82,7 +75,7 @@ This is caused by [amazon-kinesis-producer#10](https://github.com/awslabs/amazon
 
 ```sh
 bundle install
-bundle exec rspec
+bundle exec rake
 ```
 
 
