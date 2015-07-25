@@ -7,7 +7,8 @@ require "json"
 describe LogStash::Outputs::Kinesis do
   let(:config) {{
     "stream_name" => "test",
-    "region" => "ap-southeast-2"
+    "region" => "ap-southeast-2",
+    "metrics_level" => "none"
   }}
   let(:sample_event) { LogStash::Event.new }
 
