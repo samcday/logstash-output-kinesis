@@ -86,40 +86,32 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
 
   def create_kpl_config
     config = KPL.KinesisProducerConfiguration::new()
-      .setAggregationEnabled(@aggregation_enabled)
-      .setAggregationMaxCount(@aggregation_max_count)
-      .setAggregationMaxSize(@aggregation_max_size)
-      .setCollectionMaxCount(@collection_max_count)
-      .setCollectionMaxSize(@collection_max_size)
-      .setConnectTimeout(@connect_timeout)
-      .setCredentialsRefreshDelay(@credentials_refresh_delay)
-      .setFailIfThrottled(@fail_if_throttled)
-      .setLogLevel(@log_level)
-      .setMaxConnections(@max_connections)
-      .setMetricsGranularity(@metrics_granularity)
-      .setMetricsLevel(@metrics_level)
-      .setMetricsNamespace(@metrics_namespace)
-      .setMetricsUploadDelay(@metrics_upload_delay)
-      .setMinConnections(@min_connections)
-      .setPort(@port)
-      .setRateLimit(@rate_limit)
-      .setRecordMaxBufferedTime(@record_max_buffered_time)
-      .setRecordTtl(@record_ttl)
-      .setRegion(@region)
-      .setRequestTimeout(@request_timeout)
-      .setVerifyCertificate(@verify_certificate)
 
-    if !@native_executable.nil?
-      config.setNativeExecutable(@native_executable)
-    end
-
-    if !@temp_directory.nil?
-      config.setTempDirectory(@temp_directory)
-    end
-
-    if !@custom_endpoint.nil?
-      config.setCustomEndpoint(@custom_endpoint)
-    end
+    config.setAggregationEnabled(@aggregation_enabled)
+    config.setAggregationMaxCount(@aggregation_max_count)
+    config.setAggregationMaxSize(@aggregation_max_size)
+    config.setCollectionMaxCount(@collection_max_count)
+    config.setCollectionMaxSize(@collection_max_size)
+    config.setConnectTimeout(@connect_timeout)
+    config.setCredentialsRefreshDelay(@credentials_refresh_delay)
+    config.setCustomEndpoint(@custom_endpoint) if !@custom_endpoint.nil?
+    config.setFailIfThrottled(@fail_if_throttled)
+    config.setLogLevel(@log_level)
+    config.setMaxConnections(@max_connections)
+    config.setMetricsGranularity(@metrics_granularity)
+    config.setMetricsLevel(@metrics_level)
+    config.setMetricsNamespace(@metrics_namespace)
+    config.setMetricsUploadDelay(@metrics_upload_delay)
+    config.setMinConnections(@min_connections)
+    config.setNativeExecutable(@native_executable) if !@native_executable.nil?
+    config.setPort(@port)
+    config.setRateLimit(@rate_limit)
+    config.setRecordMaxBufferedTime(@record_max_buffered_time)
+    config.setRecordTtl(@record_ttl)
+    config.setRegion(@region)
+    config.setRequestTimeout(@request_timeout)
+    config.setTempDirectory(@temp_directory) if !@temp_directory.nil?
+    config.setVerifyCertificate(@verify_certificate)
 
     config
   end
