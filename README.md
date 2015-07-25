@@ -3,6 +3,7 @@
 [![Build Status][badge-travis]][travis]
 [![Gem info][badge-gem]][rubygems]
 [![Code Climate][badge-codeclimate]][codeclimate]
+[![Code Coverage][badge-coverage]][codeclimate]
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
 
