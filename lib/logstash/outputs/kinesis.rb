@@ -50,44 +50,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
 
   public
   def register
-    @kpl_config = KPL.KinesisProducerConfiguration::new()
-      .setAggregationEnabled(@aggregation_enabled)
-      .setAggregationMaxCount(@aggregation_max_count)
-      .setAggregationMaxSize(@aggregation_max_size)
-      .setCollectionMaxCount(@collection_max_count)
-      .setCollectionMaxSize(@collection_max_size)
-      .setConnectTimeout(@connect_timeout)
-      .setCredentialsRefreshDelay(@credentials_refresh_delay)
-      .setFailIfThrottled(@fail_if_throttled)
-      .setLogLevel(@log_level)
-      .setMaxConnections(@max_connections)
-      .setMetricsGranularity(@metrics_granularity)
-      .setMetricsLevel(@metrics_level)
-      .setMetricsNamespace(@metrics_namespace)
-      .setMetricsUploadDelay(@metrics_upload_delay)
-      .setMinConnections(@min_connections)
-      .setPort(@port)
-      .setRateLimit(@rate_limit)
-      .setRecordMaxBufferedTime(@record_max_buffered_time)
-      .setRecordTtl(@record_ttl)
-      .setRegion(@region)
-      .setRequestTimeout(@request_timeout)
-      .setVerifyCertificate(@verify_certificate)
-
-    if !@native_executable.nil?
-      @kpl_config = @kpl_config.setNativeExecutable(@native_executable)
-    end
-
-    if !@temp_directory.nil?
-      @kpl_config = @kpl_config.setTempDirectory(@temp_directory)
-    end
-
-    if !@custom_endpoint.nil?
-      @kpl_config = @kpl_config.setCustomEndpoint(@custom_endpoint)
-    end
-
-    @producer = KPL.KinesisProducer::new(@kpl_config)
-
+    @producer = KPL.KinesisProducer::new(create_kpl_config)
     @codec.on_event(&method(:send_record))
   end
 
@@ -119,6 +82,44 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def teardown
     @producer.flushSync()
     @producer.destroy()
+  end
+
+  def create_kpl_config
+    config = KPL.KinesisProducerConfiguration::new()
+      .setAggregationEnabled(@aggregation_enabled)
+      .setAggregationMaxCount(@aggregation_max_count)
+      .setAggregationMaxSize(@aggregation_max_size)
+      .setCollectionMaxCount(@collection_max_count)
+      .setCollectionMaxSize(@collection_max_size)
+      .setConnectTimeout(@connect_timeout)
+      .setCredentialsRefreshDelay(@credentials_refresh_delay)
+      .setFailIfThrottled(@fail_if_throttled)
+      .setLogLevel(@log_level)
+      .setMaxConnections(@max_connections)
+      .setMetricsGranularity(@metrics_granularity)
+      .setMetricsLevel(@metrics_level)
+      .setMetricsNamespace(@metrics_namespace)
+      .setMetricsUploadDelay(@metrics_upload_delay)
+      .setMinConnections(@min_connections)
+      .setPort(@port)
+      .setRateLimit(@rate_limit)
+      .setRecordMaxBufferedTime(@record_max_buffered_time)
+      .setRecordTtl(@record_ttl)
+      .setRegion(@region)
+      .setRequestTimeout(@request_timeout)
+      .setVerifyCertificate(@verify_certificate)
+
+    if !@native_executable.nil?
+      config.setNativeExecutable(@native_executable)
+    end
+
+    if !@temp_directory.nil?
+      config.setTempDirectory(@temp_directory)
+    end
+
+    if !@custom_endpoint.nil?
+      config.setCustomEndpoint(@custom_endpoint)
+    end
   end
 
   def send_record(event, payload)
