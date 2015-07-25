@@ -99,10 +99,7 @@ Are more than welcome. Raising an issue is great, raising a PR is better, raisin
 
 [travis]: https://travis-ci.org/samcday/logstash-output-kinesis
 [rubygems]: https://rubygems.org/gems/logstash-output-kinesis
-[codeclimate]: https://codeclimate.com/github/samcday/logstash-output-kinesis
 [kpldoc]: https://github.com/awslabs/amazon-kinesis-producer/blob/v0.10.0/java/amazon-kinesis-producer/src/main/java/com/amazonaws/services/kinesis/producer/KinesisProducerConfiguration.java#L38
 
 [badge-travis]: https://img.shields.io/travis/samcday/logstash-output-kinesis.svg?style=flat-square
 [badge-gem]: https://img.shields.io/gem/v/logstash-output-kinesis.svg?style=flat-square
-[badge-codeclimate]: https://img.shields.io/codeclimate/github/samcday/logstash-output-kinesis.svg?style=flat-square
-[badge-coverage]: https://img.shields.io/codeclimate/coverage/github/samcday/logstash-output-kinesis.svg?style=flat-square
