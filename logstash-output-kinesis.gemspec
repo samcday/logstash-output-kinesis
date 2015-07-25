@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
-  s.name = 'logstash-output-kinesis'
-  s.version         = "0.0.1"
+  s.name = "logstash-output-kinesis"
+  s.version = "0.0.1"
   s.licenses = ["Apache License (2.0)"]
   s.summary = "This output plugin sends records to Kinesis using the Kinesis Producer Library (KPL)"
   s.description = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install logstash-output-kinesis. This gem is not a stand-alone program"
@@ -10,12 +10,15 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # Files
-  s.files = `git ls-files`.split($\).concat(Dir.glob("lib/**/*.jar")).concat(Dir.glob("lib/*_jars.rb"))
+  s.files = `git ls-files`.split($\)
    # Tests
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
   # Special flag to let us know this is actually a logstash plugin
-  s.metadata = { "logstash_plugin" => "true", "logstash_group" => "output" }
+  s.metadata = {
+    "logstash_plugin" => "true",
+    "logstash_group" => "output"
+  }
 
   # Jar dependencies
   s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.10.0'"
