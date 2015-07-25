@@ -1,5 +1,8 @@
 # Kinesis Output Plugin
 
+[![Build Status][badge-travis]][travis]
+[![Gem info][badge-gem]][rubygems]
+
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
 
 It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [KPL](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html) library.
@@ -92,4 +95,9 @@ Are more than welcome. Raising an issue is great, raising a PR is better, raisin
 
 [Apache License 2.0](LICENSE)
 
+[travis]: https://travis-ci.org/samcday/logstash-output-kinesis
+[rubygems]: https://rubygems.org/gems/logstash-output-kinesis
 [kpldoc]: https://github.com/awslabs/amazon-kinesis-producer/blob/v0.10.0/java/amazon-kinesis-producer/src/main/java/com/amazonaws/services/kinesis/producer/KinesisProducerConfiguration.java#L38
+
+[badge-travis]: https://img.shields.io/travis/samcday/logstash-output-kinesis.svg?style=flat-square
+[badge-gem]: https://img.shields.io/gem/v/logstash-output-kinesis.svg?style=flat-square
