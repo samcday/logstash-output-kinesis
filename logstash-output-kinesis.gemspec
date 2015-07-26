@@ -24,13 +24,9 @@ Gem::Specification.new do |s|
     "logstash_group" => "output"
   }
 
-  # Jar dependencies
-  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.10.0'"
-
   s.platform = "java"
 
   # Gem dependencies
-  s.add_runtime_dependency "jar-dependencies"
   s.add_runtime_dependency "logstash-core", ">= 1.4.0", "< 2.0.0"
   s.add_runtime_dependency "logstash-codec-plain"
   s.add_runtime_dependency "logstash-codec-json"
