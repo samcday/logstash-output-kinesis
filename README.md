@@ -73,6 +73,8 @@ This is caused by [amazon-kinesis-producer#10](https://github.com/awslabs/amazon
 
 ## Developing
 
+Ensure you have JRuby 1.7.x installed. [rvm](https://rvm.io/) is your friend :)
+
 ```sh
 bundle install
 bundle exec rake
