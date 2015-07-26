@@ -81,6 +81,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def teardown
     @producer.flushSync()
     @producer.destroy()
+    finished()
   end
 
   def create_kpl_config
@@ -116,7 +117,11 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   end
 
   def send_record(event, payload)
-    event_blob = ByteBuffer::wrap(payload.to_java_bytes)
-    @producer.addUserRecord(@stream_name, event["[@metadata][partition_key]"], event_blob)
+    begin
+      event_blob = ByteBuffer::wrap(payload.to_java_bytes)
+      @producer.addUserRecord(@stream_name, event["[@metadata][partition_key]"], event_blob)
+    rescue => e
+      @logger.warn("Error writing event to Kinesis", :exception => e, :event => event)
+    end
   end
 end
