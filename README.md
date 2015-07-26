@@ -48,6 +48,22 @@ output {
 }
 ```
 
+### Record Aggregation
+
+The [Amazon KPL library can aggregate](https://docs.aws.amazon.com/kinesis/latest/dev/kinesis-kpl-concepts.html#d0e3423) your records when writing to the Kinesis stream. **This behaviour is configured to be enabled by default.**
+
+If you are using an older version of the Amazon KCL library to consume your records, or not using KCL at all, your consumer application(s) will probably not behave correctly. See [the matrix on this page](https://docs.aws.amazon.com/kinesis/latest/dev/kinesis-kpl-integration.html) for more info, and read [more about de-aggregating records here](https://docs.aws.amazon.com/kinesis/latest/dev/kinesis-kpl-consumer-deaggregation.html).
+
+If you wish to simply disable record aggregation, that's easy:
+
+```
+output {
+  kinesis {
+    aggregation_enabled => false
+  }
+}
+```
+
 
 ## Known Issues
 
