@@ -86,6 +86,14 @@ at java.lang.Thread.run(Thread.java:724)
 
 This is caused by [amazon-kinesis-producer#10](https://github.com/awslabs/amazon-kinesis-producer/issues/10)
 
+## SIGKILL on Logstash forces KPL into Beast Mode
+
+The Amazon KPL is actually run as a child process of Logstash. In the event that you `SIGKILL` Logstash, the KPL process will be orphaned. It doesn't like that very much. It goes into some kind of busy-wait loop and will gobble up one or more of your CPUs, which is not great.
+
+This issue has been flagged at [amazon-kinesis-producer#14](https://github.com/awslabs/amazon-kinesis-producer/issues/14)
+
+If you're using the init.d scripts provided with the official Logstash packaging, **MAKE SURE YOU SET `KILL_ON_STOP_TIMEOUT=0` IN `/etc/defaults/logstash`**.
+
 
 ## Developing
 
