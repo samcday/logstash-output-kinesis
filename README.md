@@ -5,14 +5,14 @@
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
 
-It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [KPL](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html) library.
+It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html) library.
 
 
 ## Configuration
 
 Minimum required configuration to get this plugin chugging along:
 
-```
+```nginx
 output {
   kinesis {
     stream_name => "logs-stream"
@@ -23,23 +23,79 @@ output {
 
 This plugin accepts a wide range of configuration options, most of which come from the underlying KPL library itself. [View the full list of KPL configuration options here.][kpldoc]
 
-Please note that configuration options are snake_cased instead of camelCased. So, where [KinesisProducerConfiguration][kpldoc] offers a `setMetricsLevel` option,this plugin accepts a `metrics_level` option.
+Please note that configuration options are snake_cased instead of camelCased. So, where [KinesisProducerConfiguration][kpldoc] offers a `setMetricsLevel` option, this plugin accepts a `metrics_level` option.
 
-### AWS Credentials
+### Metrics
 
-There aren't many Kinesis streams out there that allow you to write to them without some AWS credentials.
+The underlying KPL library defaults to sending CloudWatch metrics to give insight into what it's actually doing at runtime. It's highly recommended you ensure these metrics are flowing through, and use them to monitor the health of your log shipping.
 
-This plugin does not allow you to specify credentials directly. Instead, the AWS SDK [DefaultAWSCredentialsProviderChain](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) is used. It's quite flexible,you can provide your credentials via any of the following mechanisms:
+If for some reason you want to switch them off, you can easily do so:
 
- * `AWS_ACCESS_KEY_ID` / `AWS_SECRET_KEY` environment variables
+```nginx
+output {
+  kinesis {
+    # ...
+
+    metrics_level => "none"
+  }
+}
+```
+
+If you choose to keep metrics enabled, ensure the AWS credentials you provide to this plugin are able to write to Kinesis *and* write to CloudWatch.
+
+### Authentication
+
+By default, this plugin will use the AWS SDK [DefaultAWSCredentialsProviderChain](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) to obtain credentials for communication with the Kinesis stream (and CloudWatch, if metrics are enabled). The following places will be checked for credentials:
+
+ * `AWS_ACCESS_KEY_ID` / `AWS_SECRET_KEY` environment variables available to the Logstash prociess
  * `~/.aws/credentials` credentials file
- * Instance profile for your running EC2 instance
+ * Instance profile (if Logstash is running in an EC2 instance)
+
+If you want to provide credentials directly in the config file, you can do so:
+
+```nginx
+output {
+  kinesis {
+    # ...
+
+    access_key => "AKIAIDFAKECREDENTIAL"
+    secret_key => "KX0ofakeLcredentialsGrightJherepOlolPkQk"
+
+    # You can provide specific credentials for CloudWatch metrics:
+    metrics_access_key => "AKIAIDFAKECREDENTIAL"
+    metrics_secret_key => "KX0ofakeLcredentialsGrightJherepOlolPkQk"
+  }
+}
+```
+
+If `access_key` and `secret_key` are provided, they will be used for communicating with Kinesis *and* CloudWatch. If `metrics_access_key` and `metrics_secret_key` are provided, they will be used for communication with CloudWatch. If only the metrics credentials were provided, Kinesis would use the default credentials provider (explained above) and CloudWatch would use the specific credentials. Confused? Good!
+
+#### Using STS
+
+You can also configure this plugin to use [AWS STS](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html) to "assume" a role that has access to Kinesis and CloudWatch. If you use this in combination with EC2 instance profiles (which the defaults credentials provider explained above uses) then you can actually configure your Logstash to write to Kinesis and CloudWatch without any hardcoded credentials.
+
+```nginx
+output {
+  kinesis {
+    # ...
+
+    role_arn => "arn:aws:iam::123456789:role/my-kinesis-producer-role"
+
+    # You can also provide a specific role to assume for CloudWatch metrics:
+    metrics_role_arn => "arn:aws:iam::123456789:role/my-metrics-role"
+  }
+}
+```
+
+You can combine `role_arn` / `metrics_role_arn` with the explicit AWS credentials config explained earlier, too.
+
+All this stuff can be mixed too - if you wanted to use hardcoded credentials for Kinesis, but then assume a role via STS for accessing CloudWatch, you can do that. Vice versa would work too - assume a role for accessing Kinesis and then providing hardcoded credentials for CloudWatch. Make things as arbitrarily complicated for yourself as you like ;)
 
 ### Building a partition key
 
 Kinesis demands a [partition key](https://docs.aws.amazon.com/kinesis/latest/dev/key-concepts.html#partition-key) be provided for each record. By default, this plugin will provide a very boring partition key of `-`. However, you can configure it to compute a partition key from fields in your log events.
 
-```
+```nginx
 output {
   kinesis {
     # ...
@@ -56,7 +112,7 @@ If you are using an older version of the Amazon KCL library to consume your reco
 
 If you wish to simply disable record aggregation, that's easy:
 
-```
+```nginx
 output {
   kinesis {
     aggregation_enabled => false
