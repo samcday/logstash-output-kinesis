@@ -18,6 +18,20 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   # A list of event data keys to use when constructing a partition key
   config :event_partition_keys, :validate => :array, :default => []
 
+  # An AWS access key to use for authentication to Kinesis and CloudWatch
+  config :access_key, :validate => :string
+  # An AWS secret key to use for authentication to Kinesis and CloudWatch
+  config :secret_key, :validate => :string
+  # If provided, STS will be used to assume this role and use it to authenticate to Kinesis and CloudWatch
+  config :role_arn, :validate => :string
+
+  # If provided, use this AWS access key for authentication to CloudWatch
+  config :metrics_access_key, :validate => :string
+  # If provided, use this AWS secret key for authentication to CloudWatch
+  config :metrics_secret_key, :validate => :string
+  # If provided, STS will be used to assume this role and use it to authenticate to CloudWatch
+  config :metrics_role_arn, :validate => :string
+
   config :aggregation_enabled, :validate => :boolean, :default => true
   config :aggregation_max_count, :validate => :number, :default => 4294967295
   config :aggregation_max_size, :validate => :number, :default => 51200
@@ -45,10 +59,14 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config :verify_certificate, :validate => :boolean, :default => true
 
   KPL = com.amazonaws.services.kinesis.producer
+  AWSAuth = com.amazonaws.auth
   ByteBuffer = java.nio.ByteBuffer
 
   public
   def register
+    @metrics_access_key ||= @access_key
+    @metrics_secret_key ||= @secret_key
+
     @producer = KPL.KinesisProducer::new(create_kpl_config)
     @codec.on_event(&method(:send_record))
   end
@@ -87,17 +105,22 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_kpl_config
     config = KPL.KinesisProducerConfiguration::new()
 
+    credentials_provider = create_credentials_provider
+    metrics_credentials_provider = create_metrics_credentials_provider
+
     config.setAggregationEnabled(@aggregation_enabled)
     config.setAggregationMaxCount(@aggregation_max_count)
     config.setAggregationMaxSize(@aggregation_max_size)
     config.setCollectionMaxCount(@collection_max_count)
     config.setCollectionMaxSize(@collection_max_size)
     config.setConnectTimeout(@connect_timeout)
+    config.setCredentialsProvider(credentials_provider)
     config.setCredentialsRefreshDelay(@credentials_refresh_delay)
     config.setCustomEndpoint(@custom_endpoint) if !@custom_endpoint.nil?
     config.setFailIfThrottled(@fail_if_throttled)
     config.setLogLevel(@log_level)
     config.setMaxConnections(@max_connections)
+    config.setMetricsCredentialsProvider(metrics_credentials_provider)
     config.setMetricsGranularity(@metrics_granularity)
     config.setMetricsLevel(@metrics_level)
     config.setMetricsNamespace(@metrics_namespace)
@@ -116,6 +139,28 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     config
   end
 
+  def create_credentials_provider
+    provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
+    if @access_key and @secret_key
+      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
+    end
+    if @role_arn
+      provider = AWSAuth.STSAssumeRoleSessionCredentialsProvider.new(provider, @role_arn, "logstash-output-kinesis")
+    end
+    provider
+  end
+
+  def create_metrics_credentials_provider
+    provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
+    if @metrics_access_key and @metrics_secret_key
+      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
+    end
+    if @metrics_role_arn
+      provider = AWSAuth.STSAssumeRoleSessionCredentialsProvider.new(provider, @metrics_role_arn, "logstash-output-kinesis")
+    end
+    provider
+  end
+
   def send_record(event, payload)
     begin
       event_blob = ByteBuffer::wrap(payload.to_java_bytes)
@@ -123,5 +168,23 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     rescue => e
       @logger.warn("Error writing event to Kinesis", :exception => e, :event => event)
     end
+  end
+end
+
+class BasicCredentialsProvider
+  java_implements 'com.amazonaws.auth.AWSCredentialsProvider'
+
+  def initialize(credentials)
+    @credentials = credentials
+  end
+
+  java_signature 'com.amazonaws.auth.AWSCredentials getCredentials()'
+  def getCredentials
+    @credentials
+  end
+
+  java_signature 'void refresh()'
+  def refresh
+    # Noop.
   end
 end
