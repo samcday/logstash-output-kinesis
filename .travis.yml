@@ -1,1 +1,9 @@
 language: ruby
+deploy:
+  provider: rubygems
+  api_key:
+    secure: KLegBk+GpcGl4JJvWO2lre8xG/43RUjPlWVVCmvz0hmN33+d78WMRErIgGta9FgXw6KE7VPymXiFrS8EAdY5IHe1Oxt/PuvC1/FiP/oU7IPp1UcmqOxPdiOJtqFy7DqjfNc/nvmvUYf1JKKNMBAjSFgzzccQFB418wUPb1dokkl/QgS2azP3aF9PfKWiZd4iWUVxY30TB2W1+qvjT6ix6idU7aQjTwzFIvEs6WYZuIdl0fB2oF5no8oyw6NVfaxA89Jv2d8CGVlIOp6Q/ZXzNCviM/PYkKVuCmObgG19q4v8L2M0y+2GcLEORbwmwFSLBj6rjLg6WpZXCx+QppA7AeuQZ0rvZ+Jb4Eaqu+dQTd57We1dbcGWgonlisuqkJv0cv7Qy+hupJ5mil/ofTUoHapwhTpsdVch/XsV8rV3wu012j1eeTgp4EjbBcgHYnmc6XJGHLigVAEv//OQEl7eUpM7zZbmpaYmtjJsFveVP/WS8/rAwjytSD58mcVyNzHTtjVgr58ejUc61TvZFErkPhfUjtj+xuRyJKQXmS5Y70itRDBtu3VFNoimXg2Onz3bWmUQSQ7kL3/ctvXUoT8Rmza712bF1ZRblbKLi+sPFXo2++v4wxxOH89aqjdYcnjP+tBz3KCN9jVGJ9c8nUI08Lv29dJreQJl3N1Cjnce2cA=
+  gem: logstash-output-kinesis
+  on:
+    tags: true
+    repo: samcday/logstash-output-kinesis
