@@ -166,7 +166,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       event_blob = ByteBuffer::wrap(payload.to_java_bytes)
       @producer.addUserRecord(@stream_name, event["[@metadata][partition_key]"], event_blob)
     rescue => e
-      @logger.warn("Error writing event to Kinesis", :exception => e, :event => event)
+      @logger.warn("Error writing event to Kinesis", :exception => e)
     end
   end
 end
