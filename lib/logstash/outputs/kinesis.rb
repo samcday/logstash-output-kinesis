@@ -32,6 +32,9 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   # If provided, STS will be used to assume this role and use it to authenticate to CloudWatch
   config :metrics_role_arn, :validate => :string
 
+  config :sts_proxy_host, :validate => :string
+  config :sts_proxy_port, :validate => :number
+
   config :aggregation_enabled, :validate => :boolean, :default => true
   config :aggregation_max_count, :validate => :number, :default => 4294967295
   config :aggregation_max_size, :validate => :number, :default => 51200
@@ -139,13 +142,26 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     config
   end
 
+  def create_sts_provider(base_provider, arn)
+    client_config = com.amazonaws.ClientConfiguration.new()
+    if @sts_proxy_host
+      client_config.setProxyHost(@sts_proxy_host)
+    end
+    if @sts_proxy_port
+      client_config.setProxyPort(@sts_proxy_port)
+    end
+    provider = AWSAuth.STSAssumeRoleSessionCredentialsProvider.new(
+      base_provider, arn, "logstash-output-kinesis", client_config)
+    provider
+  end
+
   def create_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @access_key and @secret_key
       provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
     end
     if @role_arn
-      provider = AWSAuth.STSAssumeRoleSessionCredentialsProvider.new(provider, @role_arn, "logstash-output-kinesis")
+      provider = create_sts_provider(provider, @role_arn)
     end
     provider
   end
@@ -156,7 +172,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
     end
     if @metrics_role_arn
-      provider = AWSAuth.STSAssumeRoleSessionCredentialsProvider.new(provider, @metrics_role_arn, "logstash-output-kinesis")
+      provider = create_sts_provider(provider, @metrics_role_arn)
     end
     provider
   end
