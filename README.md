@@ -5,6 +5,8 @@
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash). It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html).
 
+**This version is intended for use with Logstash 1.5.x. Please use a 2.x version of this plugin for Logstash 2.0+ compatbility.**
+
 
 ## Configuration
 
