@@ -1,11 +1,11 @@
-# Kinesis Output Plugin `1.5.x`
+# Kinesis Output Plugin
 
 [![Build Status][badge-travis]][travis]
 [![Gem info][badge-gem]][rubygems]
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash). It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html).
 
-**This version is intended for use with Logstash 1.5.x. Please use a 2.x version of this plugin for Logstash 2.0+ compatbility.**
+**This version is intended for use with Logstash 2.x. Please use a [1.5.x](https://github.com/samcday/logstash-output-kinesis/tree/1.5) version of this plugin for Logstash 1.5.x compatibility.**
 
 
 ## Configuration
