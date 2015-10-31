@@ -21,7 +21,7 @@ describe LogStash::Outputs::Kinesis do
       output = LogStash::Outputs::Kinesis.new (config)
       output.register
       output.receive(sample_event)
-      output.teardown
+      output.close
     end
   end
 end
