@@ -1,3 +1,3 @@
 module LogstashOutputKinesis
-  VERSION = "0.0.11"
+  VERSION = "1.5.0"
 end
