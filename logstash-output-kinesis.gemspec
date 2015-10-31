@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
 
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 1.4.0", "< 2.0.0"
-  s.add_runtime_dependency "logstash-codec-plain"
-  s.add_runtime_dependency "logstash-codec-json"
-  s.add_development_dependency "logstash-devutils"
+  s.add_runtime_dependency "logstash-codec-plain", "< 2.0.0"
+  s.add_runtime_dependency "logstash-codec-json", "< 2.0.0"
+  s.add_development_dependency "logstash-devutils", "< 2.0.0"
   s.add_development_dependency "gem-release", "~>0.7.3"
 end
