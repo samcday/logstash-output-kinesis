@@ -99,10 +99,9 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   end
 
   public
-  def teardown
+  def close
     @producer.flushSync()
     @producer.destroy()
-    finished()
   end
 
   def create_kpl_config
