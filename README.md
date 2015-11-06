@@ -104,6 +104,18 @@ output {
 }
 ```
 
+#### Randomised partition keys
+
+If you don't care about the ordering of your logs in the Kinesis stream, you might want to use a random partition key. This way, your log stream will be more or less uniformly spread across all available shards in the Kinesis stream.
+
+```nginx
+output {
+  kinesis {
+    randomized_partition_key => true
+  }
+}
+```
+
 ### Record Aggregation
 
 The [Amazon KPL library can aggregate](https://docs.aws.amazon.com/kinesis/latest/dev/kinesis-kpl-concepts.html#d0e3423) your records when writing to the Kinesis stream. **This behaviour is configured to be enabled by default.**
