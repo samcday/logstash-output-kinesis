@@ -3,6 +3,7 @@
 require "java"
 require "logstash/outputs/base"
 require "logstash/namespace"
+require "securerandom"
 require "logstash-output-kinesis_jars"
 
 # Sends log events to a Kinesis stream. This output plugin uses the official Amazon KPL.
@@ -17,6 +18,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config :stream_name, :validate => :string, :required => true
   # A list of event data keys to use when constructing a partition key
   config :event_partition_keys, :validate => :array, :default => []
+  # If true, a random partition key will be assigned to each log record
+  config :randomized_partition_key, :validate => :boolean, :default => false
 
   # An AWS access key to use for authentication to Kinesis and CloudWatch
   config :access_key, :validate => :string
@@ -78,18 +81,22 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def receive(event)
     return unless output?(event)
 
-    # Haha - gawd. If I don't put an empty string in the array, then calling .join()
-    # on it later will result in a US-ASCII string if the array is empty. Ruby is awesome.
-    partition_key_parts = [""]
+    if @randomized_partition_key
+      event["[@metadata][partition_key]"] = SecureRandom.uuid
+    else
+      # Haha - gawd. If I don't put an empty string in the array, then calling .join()
+      # on it later will result in a US-ASCII string if the array is empty. Ruby is awesome.
+      partition_key_parts = [""]
 
-    @event_partition_keys.each do |partition_key_name|
-      if not event[partition_key_name].nil? and event[partition_key_name].length > 0
-        partition_key_parts << event[partition_key_name].to_s
-        break
+      @event_partition_keys.each do |partition_key_name|
+        if not event[partition_key_name].nil? and event[partition_key_name].length > 0
+          partition_key_parts << event[partition_key_name].to_s
+          break
+        end
       end
-    end
 
-    event["[@metadata][partition_key]"] = (partition_key_parts * "-").to_s[/.+/m] || "-"
+      event["[@metadata][partition_key]"] = (partition_key_parts * "-").to_s[/.+/m] || "-"
+    end
 
     begin
       @codec.encode(event)
