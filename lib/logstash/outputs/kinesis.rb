@@ -20,6 +20,9 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config :event_partition_keys, :validate => :array, :default => []
   # If true, a random partition key will be assigned to each log record
   config :randomized_partition_key, :validate => :boolean, :default => false
+  # If the number of records pending being written to Kinesis exceeds this number, then block
+  # Logstash processing until they're all written.
+  config :max_pending_records, :validate => :number, :default => 1000
 
   # An AWS access key to use for authentication to Kinesis and CloudWatch
   config :access_key, :validate => :string
@@ -190,6 +193,13 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       @producer.addUserRecord(@stream_name, event["[@metadata][partition_key]"], event_blob)
     rescue => e
       @logger.warn("Error writing event to Kinesis", :exception => e)
+    end
+
+    num = @producer.getOutstandingRecordsCount()
+    if num > @max_pending_records
+      @logger.warn("Kinesis is too busy - blocking until things have cleared up")
+      @producer.flushSync()
+      @logger.info("Okay - I've stopped blocking now")
     end
   end
 end
