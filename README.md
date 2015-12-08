@@ -134,14 +134,14 @@ output {
 
 ### Backpressure
 
-The KPL library does not force any backpressure. This means if Kinesis is unavailable or throttling, KPL will happily accept records until it chews up all available memory on your machine. This plugin has a default backpressure mechanism - if there's more than 1000 pending records to be written to Kinesis, then further log records will block. This will cause Logstash to block further processing until everything is flushed out to Kinesis. I know that sounds lame, but it's better than the Linux OOM killer stepping in and breaking all your shit, no?
+This plugin will enforce backpressure if the records passing through Logstash's pipeline are not making it up to Kinesis fast enough. When this happens, Logstash will stop accepting records for input or filtering, and a warning will be emitted in the Logstash logs.
 
-Anyway, if you want to throw more memory / CPU cycles at buffering lots of stuff before it makes it to Kinesis, you can control the high-watermark:
+By default, the threshold for blocking is 1000 pending records. If you want to throw more memory / CPU cycles at buffering lots of stuff before it makes it to Kinesis, you can control the high-watermark:
 
 ```nginx
 output {
   kinesis {
-    max_pending_records => 10000 # I sure as hell hope you know what you're doing.
+    max_pending_records => 10000
   }
 }
 ```
