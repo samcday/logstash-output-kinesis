@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # Files
-  s.files = `git ls-files`.split($\)
+  s.files = Dir['lib/**/*','spec/**/*','vendor/**/*','*.gemspec','*.md','Gemfile','LICENSE']
    # Tests
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
@@ -25,6 +25,11 @@ Gem::Specification.new do |s|
   }
 
   s.platform = "java"
+
+  # Jar dependencies
+  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.10.1'"
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-sts', '1.9.37'"
+  s.add_runtime_dependency 'jar-dependencies', '~> 0.3.7'
 
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
