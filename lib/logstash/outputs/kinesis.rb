@@ -44,12 +44,16 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config :aggregation_enabled, :validate => :boolean, :default => true
   config :aggregation_max_count, :validate => :number, :default => 4294967295
   config :aggregation_max_size, :validate => :number, :default => 51200
+  config :cloudwatch_endpoint, :validate => :string, :default => nil
+  config :cloudwatch_port, :validate => :number, :default => 443
   config :collection_max_count, :validate => :number, :default => 500
   config :collection_max_size, :validate => :number, :default => 5242880
   config :connect_timeout, :validate => :number, :default => 6000
   config :credentials_refresh_delay, :validate => :number, :default => 5000
-  config :custom_endpoint, :validate => :string, :default => nil
+  config :enable_core_dumps, :validate => :boolean, :default => false
   config :fail_if_throttled, :validate => :boolean, :default => false
+  config :kinesis_endpoint, :validate => :string, :default => nil
+  config :kinesis_port, :validate => :number, :default => 443
   config :log_level, :validate => :string, :default => "info"
   config :max_connections, :validate => :number, :default => 4
   config :metrics_granularity, :validate => ["global", "stream", "shard"], :default => "shard"
@@ -58,7 +62,6 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   config :metrics_upload_delay, :validate => :number, :default => 60000
   config :min_connections, :validate => :number, :default => 1
   config :native_executable, :validate => :string, :default => nil
-  config :port, :validate => :number, :default => 443
   config :rate_limit, :validate => :number, :default => 150
   config :record_max_buffered_time, :validate => :number, :default => 100
   config :record_ttl, :validate => :number, :default => 30000
@@ -123,13 +126,17 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     config.setAggregationEnabled(@aggregation_enabled)
     config.setAggregationMaxCount(@aggregation_max_count)
     config.setAggregationMaxSize(@aggregation_max_size)
+    config.setCloudwatchEndpoint(@cloudwatch_endpoint) if !@cloudwatch_endpoint.nil?
+    config.setCloudwatchPort(@cloudwatch_port)
     config.setCollectionMaxCount(@collection_max_count)
     config.setCollectionMaxSize(@collection_max_size)
     config.setConnectTimeout(@connect_timeout)
     config.setCredentialsProvider(credentials_provider)
     config.setCredentialsRefreshDelay(@credentials_refresh_delay)
-    config.setCustomEndpoint(@custom_endpoint) if !@custom_endpoint.nil?
+    config.setEnableCoreDumps(@enable_core_dumps)
     config.setFailIfThrottled(@fail_if_throttled)
+    config.setKinesisEndpoint(@kinesis_endpoint) if !@kinesis_endpoint.nil?
+    config.setKinesisPort(@kinesis_port)
     config.setLogLevel(@log_level)
     config.setMaxConnections(@max_connections)
     config.setMetricsCredentialsProvider(metrics_credentials_provider)
@@ -139,7 +146,6 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     config.setMetricsUploadDelay(@metrics_upload_delay)
     config.setMinConnections(@min_connections)
     config.setNativeExecutable(@native_executable) if !@native_executable.nil?
-    config.setPort(@port)
     config.setRateLimit(@rate_limit)
     config.setRecordMaxBufferedTime(@record_max_buffered_time)
     config.setRecordTtl(@record_ttl)
@@ -167,7 +173,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @access_key and @secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
+      credentials = AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key)
+      provider = AWSAuth.AWSStaticCredentialsProvider.new(credentials)
     end
     if @role_arn
       provider = create_sts_provider(provider, @role_arn)
@@ -178,7 +185,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_metrics_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @metrics_access_key and @metrics_secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
+      credentials = AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key)
+      provider = AWSAuth.AWSStaticCredentialsProvider.new(credentials)
     end
     if @metrics_role_arn
       provider = create_sts_provider(provider, @metrics_role_arn)
@@ -200,23 +208,5 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       @producer.flushSync()
       @logger.info("Okay - I've stopped blocking now")
     end
-  end
-end
-
-class BasicCredentialsProvider
-  java_implements 'com.amazonaws.auth.AWSCredentialsProvider'
-
-  def initialize(credentials)
-    @credentials = credentials
-  end
-
-  java_signature 'com.amazonaws.auth.AWSCredentials getCredentials()'
-  def getCredentials
-    @credentials
-  end
-
-  java_signature 'void refresh()'
-  def refresh
-    # Noop.
   end
 end

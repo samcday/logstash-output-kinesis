@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # Files
-  s.files = `git ls-files`.split($\)
+  s.files = Dir['lib/**/*','spec/**/*','vendor/**/*','*.gemspec','*.md','Gemfile','LICENSE']
    # Tests
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
@@ -26,15 +26,20 @@ Gem::Specification.new do |s|
 
   s.platform = "java"
 
+  # Jar dependencies
+  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.12.3'"
+
+  # KPL uses (1.11,1.12] as version range. Let's lock the version
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-core', '1.11.63'"
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-sts', '1.11.63'"
+  s.requirements << "jar 'org.slf4j:slf4j-simple', '1.7.13'"
+
+  s.add_runtime_dependency 'jar-dependencies', '~> 0.3.7'
+
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
-  s.add_runtime_dependency "logstash-codec-plain", "< 3.0.0"
-  s.add_runtime_dependency "logstash-codec-json", "< 3.0.0"
+  s.add_runtime_dependency "logstash-codec-plain"
+  s.add_runtime_dependency "logstash-codec-json"
   s.add_development_dependency "logstash-devutils"
   s.add_development_dependency "gem-release", "~>0.7.3"
-
-  # Temporary hack because Logstash devs are crazy.
-  # See: https://github.com/elastic/logstash/issues/4141
-  # We should be able to remove this once logstash-core >2.0.0 && >1.5.5 are released
-  s.add_development_dependency "concurrent-ruby", "0.9.1"
 end
