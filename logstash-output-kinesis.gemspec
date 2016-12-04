@@ -27,14 +27,19 @@ Gem::Specification.new do |s|
   s.platform = "java"
 
   # Jar dependencies
-  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.10.1'"
-  s.requirements << "jar 'com.amazonaws:aws-java-sdk-sts', '1.9.37'"
+  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.12.3'"
+
+  # KPL uses (1.11,1.12] as version range. Let's lock the version
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-core', '1.11.63'"
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-sts', '1.11.63'"
+  s.requirements << "jar 'org.slf4j:slf4j-simple', '1.7.13'"
+
   s.add_runtime_dependency 'jar-dependencies', '~> 0.3.7'
 
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
-  s.add_runtime_dependency "logstash-codec-plain", "< 3.0.0"
-  s.add_runtime_dependency "logstash-codec-json", "< 3.0.0"
+  s.add_runtime_dependency "logstash-codec-plain"
+  s.add_runtime_dependency "logstash-codec-json"
   s.add_development_dependency "logstash-devutils"
   s.add_development_dependency "gem-release", "~>0.7.3"
 end
