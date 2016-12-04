@@ -5,3 +5,4 @@
 /.bundle
 .DS_Store
 /Gemfile.lock
+/vendor/
