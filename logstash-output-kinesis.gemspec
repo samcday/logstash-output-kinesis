@@ -37,9 +37,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "logstash-codec-json", "< 3.0.0"
   s.add_development_dependency "logstash-devutils"
   s.add_development_dependency "gem-release", "~>0.7.3"
-
-  # Temporary hack because Logstash devs are crazy.
-  # See: https://github.com/elastic/logstash/issues/4141
-  # We should be able to remove this once logstash-core >2.0.0 && >1.5.5 are released
-  s.add_development_dependency "concurrent-ruby", "0.9.1"
 end
