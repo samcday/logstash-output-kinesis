@@ -173,7 +173,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @access_key and @secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
+      credentials = AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key)
+      provider = AWSAuth.AWSStaticCredentialsProvider.new(credentials)
     end
     if @role_arn
       provider = create_sts_provider(provider, @role_arn)
@@ -184,7 +185,8 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_metrics_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @metrics_access_key and @metrics_secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
+      credentials = AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key)
+      provider = AWSAuth.AWSStaticCredentialsProvider.new(credentials)
     end
     if @metrics_role_arn
       provider = create_sts_provider(provider, @metrics_role_arn)
@@ -206,23 +208,5 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
       @producer.flushSync()
       @logger.info("Okay - I've stopped blocking now")
     end
-  end
-end
-
-class BasicCredentialsProvider
-  java_implements 'com.amazonaws.auth.AWSCredentialsProvider'
-
-  def initialize(credentials)
-    @credentials = credentials
-  end
-
-  java_signature 'com.amazonaws.auth.AWSCredentials getCredentials()'
-  def getCredentials
-    @credentials
-  end
-
-  java_signature 'void refresh()'
-  def refresh
-    # Noop.
   end
 end
