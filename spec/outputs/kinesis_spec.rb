@@ -10,9 +10,28 @@ describe LogStash::Outputs::Kinesis do
     "region" => "ap-southeast-2",
     "metrics_level" => "none"
   }}
-  let(:sample_event) { LogStash::Event.new }
+  let(:sample_event) {
+    LogStash::Event.new({
+      "message" => "hello",
+      "field1"  => "foo",
+      "field2"  => "bar"
+    })
+  }
 
   KPL = com.amazonaws.services.kinesis.producer
+
+  context 'when initializing' do
+    it "should register" do
+      output = LogStash::Plugin.lookup("output", "kinesis").new(config)
+      expect {output.register}.to_not raise_error
+    end
+
+    it 'should populate config with default values' do
+      output = LogStash::Outputs::Kinesis.new(config)
+      insist { output.randomized_partition_key } == false
+      insist { output.event_partition_keys } == []
+    end
+  end
 
   context "when receiving message" do
     it "sends record to Kinesis" do
@@ -23,5 +42,30 @@ describe LogStash::Outputs::Kinesis do
       output.receive(sample_event)
       output.close
     end
+
+    it "should support randomized partition keys" do
+      expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
+        .with(anything, /[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+/, anything)
+
+      output = LogStash::Outputs::Kinesis.new(config.merge({
+        "randomized_partition_key" => true
+      }))
+      output.register
+      output.receive(sample_event)
+      output.close
+    end
+
+    it "should support fixed partition keys" do
+      expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
+        .with(anything, "foo", anything)
+
+      output = LogStash::Outputs::Kinesis.new(config.merge({
+        "event_partition_keys" => ["[field1]", "[field2]"]
+      }))
+      output.register
+      output.receive(sample_event)
+      output.close
+    end
   end
+
 end
