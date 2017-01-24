@@ -43,6 +43,16 @@ describe LogStash::Outputs::Kinesis do
       output.close
     end
 
+    it "should support blank partition keys" do
+      expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
+        .with(anything, "-", anything)
+
+      output = LogStash::Outputs::Kinesis.new(config)
+      output.register
+      output.receive(sample_event)
+      output.close
+    end
+
     it "should support randomized partition keys" do
       expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
         .with(anything, /[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+/, anything)
