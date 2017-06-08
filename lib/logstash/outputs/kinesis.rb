@@ -85,20 +85,20 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     return unless output?(event)
 
     if @randomized_partition_key
-      event["[@metadata][partition_key]"] = SecureRandom.uuid
+      event.set("[@metadata][partition_key]", SecureRandom.uuid)
     else
       # Haha - gawd. If I don't put an empty string in the array, then calling .join()
       # on it later will result in a US-ASCII string if the array is empty. Ruby is awesome.
       partition_key_parts = [""]
 
       @event_partition_keys.each do |partition_key_name|
-        if not event[partition_key_name].nil? and event[partition_key_name].length > 0
-          partition_key_parts << event[partition_key_name].to_s
+        if not event.get(partition_key_name).nil? and event.get(partition_key_name).length > 0
+          partition_key_parts << event.get(partition_key_name).to_s
           break
         end
       end
 
-      event["[@metadata][partition_key]"] = (partition_key_parts * "-").to_s[/.+/m] || "-"
+      event.set("[@metadata][partition_key]", (partition_key_parts * "-").to_s[/.+/m] || "-")
     end
 
     begin
@@ -189,7 +189,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def send_record(event, payload)
     begin
       event_blob = ByteBuffer::wrap(payload.to_java_bytes)
-      @producer.addUserRecord(@stream_name, event["[@metadata][partition_key]"], event_blob)
+      @producer.addUserRecord(@stream_name, event.get("[@metadata][partition_key]"), event_blob)
     rescue => e
       @logger.warn("Error writing event to Kinesis", :exception => e)
     end
