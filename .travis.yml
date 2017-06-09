@@ -1,4 +1,6 @@
 language: ruby
+jdk:
+  - oraclejdk8
 deploy:
   provider: rubygems
   api_key:
