@@ -5,7 +5,10 @@
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash). It will send log records to a [Kinesis stream](https://aws.amazon.com/kinesis/), using the [Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-kpl.html).
 
-**This version is intended for use with Logstash 2.x. Please use a [1.5.x](https://github.com/samcday/logstash-output-kinesis/tree/1.5) version of this plugin for Logstash 1.5.x compatibility.**
+**This version is intended for use with Logstash 5.x.** For plugin versions compatible with older versions of Logstash:
+
+ * [Logstash 1.5.x](https://github.com/samcday/logstash-output-kinesis/tree/1.5)
+ * [Logstash 2.x](https://github.com/samcday/logstash-output-kinesis/tree/2.x)
 
 
 ## Configuration
@@ -180,10 +183,11 @@ This is being tracked in [amazon-kinesis-producer#17](https://github.com/awslabs
 
 ## Developing
 
-Ensure you have JRuby 1.7.x installed. [rvm](https://rvm.io/) is your friend :)
+Ensure you have JRuby 9.1.x installed. [rvm](https://rvm.io/) is your friend :)
 
 ```sh
-bundle install
+rvm use --install .
+gem install bundler && bundle install
 bundle exec rake
 ```
 
