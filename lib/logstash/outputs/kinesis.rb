@@ -184,7 +184,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_metrics_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @metrics_access_key and @metrics_secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
+      provider = BasicKinesisCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@metrics_access_key, @metrics_secret_key))
     end
     if @metrics_role_arn
       provider = create_sts_provider(provider, @metrics_role_arn)
@@ -209,7 +209,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   end
 end
 
-class BasicCredentialsProvider
+class BasicKinesisCredentialsProvider
   java_implements 'com.amazonaws.auth.AWSCredentialsProvider'
 
   def initialize(credentials)
