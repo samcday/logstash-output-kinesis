@@ -173,7 +173,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   def create_credentials_provider
     provider = AWSAuth.DefaultAWSCredentialsProviderChain.new()
     if @access_key and @secret_key
-      provider = BasicCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
+      provider = BasicKinesisCredentialsProvider.new(AWSAuth.BasicAWSCredentials.new(@access_key, @secret_key))
     end
     if @role_arn
       provider = create_sts_provider(provider, @role_arn)
