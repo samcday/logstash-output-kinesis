@@ -13,6 +13,7 @@ describe LogStash::Outputs::Kinesis do
   let(:sample_event) {
     LogStash::Event.new({
       "message" => "hello",
+      'stream_name' => 'my_stream',
       "field1"  => "foo",
       "field2"  => "bar"
     })
@@ -38,6 +39,18 @@ describe LogStash::Outputs::Kinesis do
       expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
 
       output = LogStash::Outputs::Kinesis.new (config)
+      output.register
+      output.receive(sample_event)
+      output.close
+    end
+
+    it "should support Event#sprintf placeholders in stream_name" do
+      expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
+        .with("my_stream", anything, anything)
+
+      output = LogStash::Outputs::Kinesis.new(config.merge({
+        "stream_name" => "%{stream_name}",
+      }))
       output.register
       output.receive(sample_event)
       output.close
