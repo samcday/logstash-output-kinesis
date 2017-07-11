@@ -79,8 +79,10 @@ describe LogStash::Outputs::Kinesis do
     end
 
     it "should support fixed partition keys" do
+      # the partition key ends up being an empty string plus the first field
+      # we choose joined by a hyphen. this is a holdover from earlier versions
       expect_any_instance_of(KPL::KinesisProducer).to receive(:addUserRecord)
-        .with(anything, "foo", anything)
+        .with(anything, "-foo", anything)
 
       output = LogStash::Outputs::Kinesis.new(config.merge({
         "event_partition_keys" => ["[field1]", "[field2]"]
