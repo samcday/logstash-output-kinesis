@@ -197,26 +197,9 @@ While your Logstash instance is running, you may occasionally get a warning on s
 This is being tracked in awslabs/amazon-kinesis-producer#17. This log message seems to just be noise - your logs should still be delivering to Kinesis fine (but of course, you should independently verify this!).
 
 
-## Developing
-
-You'll need [Git LFS](https://git-lfs.github.com/) to properly clone this repo.
-
-Ensure you have JRuby 9.1.x installed. [rvm](https://rvm.io/) is your friend :)
-
-```sh
-rvm use --install .
-gem install bundler && bundle install
-bundle exec rake
-```
-
-### Updating KPL
-
-Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs!
-
-
 ## Contributions
 
-Are more than welcome. Raising an issue is great, raising a PR is better, raising a PR with tests is *bestest*.
+Are more than welcome. See [CONTRIBUTING.MD](CONTRIBUTING.MD)
 
 
 ## License
