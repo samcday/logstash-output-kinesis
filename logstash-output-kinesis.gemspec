@@ -31,5 +31,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "logstash-codec-plain", "< 6.0.0"
   s.add_runtime_dependency "logstash-codec-json", "< 6.0.0"
   s.add_development_dependency "logstash-devutils"
-  s.add_development_dependency "gem-release", "~>0.7.3"
 end
