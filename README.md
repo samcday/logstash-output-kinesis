@@ -151,6 +151,10 @@ output {
 
 ## Known Issues
 
+### Alpine Linux is not supported
+
+This Logstash plugin uses the KPL daemon under the covers. This daemon is linked against, and specifically requires, glibc. See awslabs/amazon-kinesis-producer#86.
+
 ### Noisy shutdown
 
 During shutdown of Logstash, you might get noisy warnings like this:
@@ -168,7 +172,7 @@ at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:61
 at java.lang.Thread.run(Thread.java:724)
 ```
 
-This is caused by [amazon-kinesis-producer#10](https://github.com/awslabs/amazon-kinesis-producer/issues/10)
+This is caused by awslabs/amazon-kinesis-producer#10.
 
 ### Noisy warnings about `Error during socket read`
 
@@ -178,10 +182,12 @@ While your Logstash instance is running, you may occasionally get a warning on s
 [2015-10-20 06:31:08.441640] [0x00007f36c9402700] [error] [io_service_socket.h:229] Error during socket read: End of file; 0 bytes read so far (kinesis.us-west-1.amazonaws.com:443)
 ```
 
-This is being tracked in [amazon-kinesis-producer#17](https://github.com/awslabs/amazon-kinesis-producer/issues/17). This log message seems to just be noise - your logs should still be delivering to Kinesis fine (but of course, you should independently verify this!).
+This is being tracked in awslabs/amazon-kinesis-producer#17. This log message seems to just be noise - your logs should still be delivering to Kinesis fine (but of course, you should independently verify this!).
 
 
 ## Developing
+
+You'll need [Git LFS](https://git-lfs.github.com/) to properly clone this repo.
 
 Ensure you have JRuby 9.1.x installed. [rvm](https://rvm.io/) is your friend :)
 
@@ -193,12 +199,12 @@ bundle exec rake
 
 ### Updating KPL
 
-Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs! Yes, we put them in the repo :(
+Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs!
 
 
 ## Contributions
 
-Are more than welcome. Raising an issue is great, raising a PR is better, raising a PR with tests is best.
+Are more than welcome. Raising an issue is great, raising a PR is better, raising a PR with tests is *bestest*.
 
 
 ## License
