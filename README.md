@@ -28,6 +28,18 @@ This plugin accepts a wide range of configuration options, most of which come fr
 
 Please note that configuration options are snake_cased instead of camelCased. So, where [KinesisProducerConfiguration][kpldoc] offers a `setMetricsLevel` option, this plugin accepts a `metrics_level` option.
 
+### Dynamic stream name
+
+You can dictate the name of the stream to send a record to, based on data in the record itself.
+
+```nginx
+output {
+  kinesis {
+    stream_name => "%{myfield}-%{myotherfield}"
+  }
+}
+```
+
 ### Metrics
 
 The underlying KPL library defaults to sending CloudWatch metrics to give insight into what it's actually doing at runtime. It's highly recommended you ensure these metrics are flowing through, and use them to monitor the health of your log shipping.
