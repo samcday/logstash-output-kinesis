@@ -1,5 +1,46 @@
-# encoding: utf-8
-require 'logstash/environment'
+# this is a generated file, to avoid over-writing it just delete this comment
+begin
+  require 'jar_dependencies'
+rescue LoadError
+  require 'com/amazonaws/aws-java-sdk-core/1.11.245/aws-java-sdk-core-1.11.245.jar'
+  require 'com/amazonaws/aws-java-sdk-sts/1.11.128/aws-java-sdk-sts-1.11.128.jar'
+  require 'commons-io/commons-io/2.4/commons-io-2.4.jar'
+  require 'com/fasterxml/jackson/core/jackson-databind/2.6.7.1/jackson-databind-2.6.7.1.jar'
+  require 'com/fasterxml/jackson/core/jackson-core/2.6.7/jackson-core-2.6.7.jar'
+  require 'com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.6.7/jackson-dataformat-cbor-2.6.7.jar'
+  require 'com/amazonaws/amazon-kinesis-producer/0.12.8/amazon-kinesis-producer-0.12.8.jar'
+  require 'commons-codec/commons-codec/1.9/commons-codec-1.9.jar'
+  require 'org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar'
+  require 'com/google/guava/guava/18.0/guava-18.0.jar'
+  require 'commons-lang/commons-lang/2.6/commons-lang-2.6.jar'
+  require 'commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar'
+  require 'joda-time/joda-time/2.8.1/joda-time-2.8.1.jar'
+  require 'com/amazonaws/jmespath-java/1.11.128/jmespath-java-1.11.128.jar'
+  require 'software/amazon/ion/ion-java/1.0.2/ion-java-1.0.2.jar'
+  require 'org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar'
+  require 'org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar'
+  require 'com/fasterxml/jackson/core/jackson-annotations/2.6.0/jackson-annotations-2.6.0.jar'
+  require 'com/google/protobuf/protobuf-java/2.6.1/protobuf-java-2.6.1.jar'
+end
 
-root_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
-LogStash::Environment.load_runtime_jars! File.join(root_dir, "vendor")
+if defined? Jars
+  require_jar 'com.amazonaws', 'aws-java-sdk-core', '1.11.245'
+  require_jar 'com.amazonaws', 'aws-java-sdk-sts', '1.11.128'
+  require_jar 'commons-io', 'commons-io', '2.4'
+  require_jar 'com.fasterxml.jackson.core', 'jackson-databind', '2.6.7.1'
+  require_jar 'com.fasterxml.jackson.core', 'jackson-core', '2.6.7'
+  require_jar 'com.fasterxml.jackson.dataformat', 'jackson-dataformat-cbor', '2.6.7'
+  require_jar 'com.amazonaws', 'amazon-kinesis-producer', '0.12.8'
+  require_jar 'commons-codec', 'commons-codec', '1.9'
+  require_jar 'org.slf4j', 'slf4j-api', '1.7.13'
+  require_jar 'com.google.guava', 'guava', '18.0'
+  require_jar 'commons-lang', 'commons-lang', '2.6'
+  require_jar 'commons-logging', 'commons-logging', '1.1.3'
+  require_jar 'joda-time', 'joda-time', '2.8.1'
+  require_jar 'com.amazonaws', 'jmespath-java', '1.11.128'
+  require_jar 'software.amazon.ion', 'ion-java', '1.0.2'
+  require_jar 'org.apache.httpcomponents', 'httpclient', '4.5.2'
+  require_jar 'org.apache.httpcomponents', 'httpcore', '4.4.4'
+  require_jar 'com.fasterxml.jackson.core', 'jackson-annotations', '2.6.0'
+  require_jar 'com.google.protobuf', 'protobuf-java', '2.6.1'
+end

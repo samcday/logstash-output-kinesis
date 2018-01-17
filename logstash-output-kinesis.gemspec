@@ -31,4 +31,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "logstash-codec-plain", "< 6.0.0"
   s.add_runtime_dependency "logstash-codec-json", "< 6.0.0"
   s.add_development_dependency "logstash-devutils"
+  
+  s.requirements << "jar 'com.amazonaws:amazon-kinesis-producer', '0.12.8'"
+  s.requirements << "jar 'com.amazonaws:aws-java-sdk-sts', '1.11.128'"
+  s.add_runtime_dependency 'jar-dependencies'
+
 end

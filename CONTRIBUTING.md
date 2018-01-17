@@ -22,4 +22,4 @@ rake
 
 ### Updating KPL
 
-Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs!
+Change the dependency version in `logstash-output-kinesis.gemspec`, and then build with `bundle install`. No need to check in the jars!
