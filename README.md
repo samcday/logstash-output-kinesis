@@ -199,7 +199,7 @@ This is being tracked in awslabs/amazon-kinesis-producer#17. This log message se
 
 ## Contributions
 
-Are more than welcome. See [CONTRIBUTING.MD](CONTRIBUTING.MD)
+Are more than welcome. See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 
 ## License

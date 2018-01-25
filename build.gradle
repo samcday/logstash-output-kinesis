@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.amazonaws:amazon-kinesis-producer:0.12.5'
+    compile 'com.amazonaws:amazon-kinesis-producer:0.12.6'
     compile 'com.amazonaws:aws-java-sdk-sts:1.11.128'
 }
 
