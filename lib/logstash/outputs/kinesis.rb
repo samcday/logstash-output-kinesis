@@ -139,7 +139,7 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
     config.setMetricsUploadDelay(@metrics_upload_delay)
     config.setMinConnections(@min_connections)
     config.setNativeExecutable(@native_executable) if !@native_executable.nil?
-    config.setPort(@port)
+    config.setKinesisPort(@port)
     config.setRateLimit(@rate_limit)
     config.setRecordMaxBufferedTime(@record_max_buffered_time)
     config.setRecordTtl(@record_ttl)
