@@ -161,6 +161,22 @@ output {
 }
 ```
 
+### Logging configuration
+
+The underlying KPL uses SLF4J for logging and binding for Log4j (used by Logstash) is included in the plugin package. Thus the logging levels can be controlled with the `log4j2.properties` file provided by Logstash.
+
+As the KPL might be too noisy with `INFO` level, you might want to dial it down by following configuration in `log4j2.properties`:
+
+```
+...
+logger.kinesis.name = com.amazonaws.services.kinesis
+logger.kinesis.level = WARN
+logger.kinesis.additivity = false
+logger.kinesis.appenderRef.console.ref = console
+...
+
+``` 
+
 ## Known Issues
 
 ### Alpine Linux is not supported
