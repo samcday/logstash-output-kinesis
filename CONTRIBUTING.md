@@ -20,6 +20,17 @@ bundle exec rake
 rake
 ```
 
+### Building gem
+
+```
+gem build logstash-output-kinesis
+```
+
+### Testing locally built gem
+```
+bin/logstash-plugin install --local /path/to/logstash-output-kinesis-5.1.1-java.gem
+```
+
 ### Updating KPL
 
 Change the dependency version in `build.gradle`, and then run `gradle copylibs`. Make sure to check in all the updated JARs!
