@@ -193,18 +193,13 @@ class LogStash::Outputs::Kinesis < LogStash::Outputs::Base
   end
 
   def send_record(event, payload)
+    sleep 0.01 until @producer.getOutstandingRecordsCount() < @max_pending_records
+
     begin
       event_blob = ByteBuffer::wrap(payload.to_java_bytes)
       @producer.addUserRecord(event.sprintf(@stream_name), event.get("[@metadata][partition_key]"), event_blob)
     rescue => e
       @logger.warn("Error writing event to Kinesis", :exception => e)
-    end
-
-    num = @producer.getOutstandingRecordsCount()
-    if num > @max_pending_records
-      @logger.warn("Kinesis is too busy - blocking until things have cleared up")
-      @producer.flushSync()
-      @logger.info("Okay - I've stopped blocking now")
     end
   end
 end
