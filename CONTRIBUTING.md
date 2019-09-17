@@ -28,7 +28,7 @@ gem build logstash-output-kinesis
 
 ### Testing locally built gem
 ```
-bin/logstash-plugin install --local /path/to/logstash-output-kinesis-5.1.1-java.gem
+bin/logstash-plugin install --local /path/to/logstash-output-kinesis-5.1.3-java.gem
 ```
 
 ### Updating KPL
